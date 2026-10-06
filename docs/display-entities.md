@@ -1,6 +1,6 @@
 # Display entities: draft implementation
 
-This branch refreshes Kastle's old display-entities branch against current Geyser and ports item and block displays to the current entity registry. Use the matching [optional pack](https://github.com/AlexProgrammerDE/GeyserOptionalPack/tree/feature/display-entities). Native correction profiles target Bedrock **1.26.51.1**.
+This branch refreshes Kastle's old display-entities branch against current Geyser and ports item and block displays to the current entity registry. Use the generated display-only artifact from the matching [pack branch](https://github.com/AlexProgrammerDE/GeyserOptionalPack/tree/feature/display-entities). Native correction profiles target Bedrock **1.26.51.1**.
 
 Codex generated this implementation and its tests. It has automated validation but **has not been tested in-game by a human**. Keep the PR in draft until those tests are complete.
 
@@ -15,6 +15,8 @@ Codex generated this implementation and its tests. It has automated validation b
 - Item-display context forwarding and an explicit correction-profile property for custom calibration.
 
 The upstream text-display implementation remains in place.
+
+Build the companion pack with `python3 tools/display/generate.py --pack GeyserDisplayEntities.mcpack` in its checkout. Put that file in Geyser's `packs/` directory. Its separate UUID preserves modern Geyser's integrated resources. The legacy OptionalPack artifact disables those resources.
 
 ## Build and automated validation
 
