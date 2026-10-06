@@ -441,7 +441,7 @@ public final class VanillaEntities {
             EntityTypeBase<SlotDisplayEntity> slotDisplayBase = EntityTypeBase.baseInherited(SlotDisplayEntity.class, entityBase)
                 .addTranslator(MetadataTypes.INT, SlotDisplayEntity::setInterpolationDelay)
                 .addTranslator(MetadataTypes.INT, SlotDisplayEntity::setInterpolationDuration)
-                .addTranslator(null) // Position/rotation interpolation is handled separately by entity movement.
+                .addTranslator(null) // Position/rotation interpolation duration is not implemented yet.
                 .addTranslator(MetadataTypes.VECTOR3, SlotDisplayEntity::setTranslation)
                 .addTranslator(MetadataTypes.VECTOR3, SlotDisplayEntity::setScale)
                 .addTranslator(MetadataTypes.QUATERNION, SlotDisplayEntity::setLeftRotation)
