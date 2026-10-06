@@ -8,22 +8,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DisplayRotationTest {
     @Test
-    void reflectsTheCoordinateFrameAndNormalizesWithoutChangingTheRotation() {
+    void reflectsTheCoordinateFrameWithoutDiscardingQuaternionMagnitude() {
         var result = DisplayRotation.toBedrockQuaternion(Quaternionf.from(2, 3, 4, 5));
-        double length = Math.sqrt(54);
-        assertEquals(2 / length, result.getX(), 1e-6);
-        assertEquals(-3 / length, result.getY(), 1e-6);
-        assertEquals(-4 / length, result.getZ(), 1e-6);
-        assertEquals(5 / length, result.getW(), 1e-6);
-        assertEquals(1, result.lengthSquared(), 1e-6);
+        assertEquals(Vector4f.from(2, -3, -4, 5), result);
+        assertEquals(54, result.lengthSquared(), 1e-6);
     }
 
     @Test
-    void zeroAndNonFiniteQuaternionsHaveAStableIdentityFallback() {
+    void zeroQuaternionsPreserveCollapseAndInvalidValuesHaveAnIdentityFallback() {
         var identity = Vector4f.from(0, 0, 0, 1);
-        assertEquals(identity, DisplayRotation.toBedrockQuaternion(Quaternionf.from(0, 0, 0, 0)));
+        assertEquals(0, DisplayRotation.toBedrockQuaternion(Quaternionf.from(0, 0, 0, 0)).lengthSquared(), 1e-6);
         assertEquals(identity, DisplayRotation.toBedrockQuaternion(Quaternionf.from(Float.NaN, 0, 0, 1)));
         assertEquals(identity, DisplayRotation.toBedrockQuaternion(Quaternionf.from(0, Float.POSITIVE_INFINITY, 0, 1)));
+        assertEquals(identity, DisplayRotation.toBedrockQuaternion(Quaternionf.from(1000001, 0, 0, 1)));
     }
 
     @Test

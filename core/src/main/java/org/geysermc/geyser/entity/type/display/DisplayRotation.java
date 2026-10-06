@@ -25,8 +25,8 @@
 
 package org.geysermc.geyser.entity.type.display;
 
-import org.cloudburstmc.math.vector.Vector4f;
 import org.cloudburstmc.math.imaginary.Quaternionf;
+import org.cloudburstmc.math.vector.Vector4f;
 
 /** Converts Java quaternions into the pack frame for independent rotation interpolation. */
 public final class DisplayRotation {
@@ -34,12 +34,13 @@ public final class DisplayRotation {
     }
 
     public static Vector4f toBedrockQuaternion(Quaternionf quaternion) {
-        double x = quaternion.getX(), y = quaternion.getY(), z = quaternion.getZ(), w = quaternion.getW();
-        double length = Math.sqrt(x * x + y * y + z * z + w * w);
-        if (!Double.isFinite(length) || length < 1e-12) {
+        float x = quaternion.getX(), y = quaternion.getY(), z = quaternion.getZ(), w = quaternion.getW();
+        if (!Float.isFinite(x) || !Float.isFinite(y) || !Float.isFinite(z) || !Float.isFinite(w)
+            || Math.max(Math.max(Math.abs(x), Math.abs(y)), Math.max(Math.abs(z), Math.abs(w))) > 1000000) {
             return Vector4f.from(0, 0, 0, 1);
         }
+        // Keep magnitude: Java's quaternion matrix includes a uniform length-squared scale.
         // Reflect Java's X axis into the pack frame. Axial vectors negate Y and Z.
-        return Vector4f.from(x / length, -y / length, -z / length, w / length);
+        return Vector4f.from(x, -y, -z, w);
     }
 }

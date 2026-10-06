@@ -188,5 +188,6 @@ public class SlotDisplayEntity extends Entity {
             throw new IllegalArgumentException("Display profile must be between 0 and 1000000");
         }
         RENDER_PROFILE.apply(propertyManager, profile);
+        updateBedrockEntityProperties();
     }
 }

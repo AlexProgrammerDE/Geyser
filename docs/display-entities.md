@@ -10,7 +10,7 @@ Codex generated this implementation and its tests. It has automated validation b
 - Block-state equipment that retains the mapped Bedrock block definition. Air and blocks without an inventory item clear equipment.
 - Initial equipment after spawn and subsequent equipment updates.
 - Independent left and right quaternions around non-uniform scale. Zero and negative display scales remain valid.
-- Quaternion normalization, an identity fallback for invalid quaternions, rejection of non-finite vectors and bounded numeric properties.
+- Quaternion magnitude preservation, a zero-quaternion collapse, an identity fallback for invalid or out-of-range quaternions, rejection of non-finite vectors and bounded numeric properties.
 - One revision for each transform update batch. The pack handles delayed, zero-duration and interrupted interpolation.
 - Item-display context forwarding and an explicit correction-profile property for custom calibration.
 
@@ -37,7 +37,7 @@ Use an isolated Java test server with this Geyser build and the matching pack. C
 
 1. Summon an item display with an ordinary sprite, then use a full block and each special profile. Check orientation against the pack's documented reference frame.
 2. Check an item supplied before spawn, a replacement after spawn, air, an invalid block state, and a block without an inventory item. Replacements must not leave stale equipment or correction factors.
-3. Apply independent rotations with non-uniform scale. Check zero scale, negative scale and rotations near gimbal lock.
+3. Apply independent rotations with non-uniform scale. Check zero scale, negative scale, non-unit and zero quaternions, and rotations near gimbal lock. A zero quaternion must collapse the display; a non-unit quaternion must retain its squared-length scale.
 4. Start a 20-tick interpolation, interrupt it halfway through, and check the next transition. Also test a positive delay and zero duration.
 5. Cross the positive/negative 180-degree boundary. The display must take the shortest rotation path. Antipodal quaternion representations must keep the same pose.
 6. Use a custom attachable. Automatic correction must skip it. Supply authored renderer factors and an explicit profile to test custom correction.

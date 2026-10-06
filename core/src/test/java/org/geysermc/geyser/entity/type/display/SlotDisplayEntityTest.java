@@ -99,8 +99,8 @@ class SlotDisplayEntityTest {
         assertEquals(1, values.getIntProperties().stream().filter(p -> p.getIndex() == names.indexOf("geyser:revision")).findFirst().orElseThrow().getValue());
         assertEquals(-2, value(values.getFloatProperties(), "sx"));
         assertEquals(0, value(values.getFloatProperties(), "sy"));
-        assertEquals(Math.sqrt(.5), value(values.getFloatProperties(), "lx"), 1e-6);
-        assertEquals(-Math.sqrt(.5), value(values.getFloatProperties(), "ry"), 1e-6);
+        assertEquals(1, value(values.getFloatProperties(), "lx"));
+        assertEquals(-1, value(values.getFloatProperties(), "ry"));
         clearInvocations(session);
         entity.updateBedrockMetadata();
         verify(session, never()).sendUpstreamPacket(any());
@@ -118,6 +118,18 @@ class SlotDisplayEntityTest {
         verify(session, never()).sendUpstreamPacket(any());
         assertThrows(IllegalArgumentException.class, () -> entity.setRenderProfile(-1));
         assertThrows(IllegalArgumentException.class, () -> entity.setRenderProfile(1000001));
+    }
+
+    @Test
+    void explicitCalibrationChangesReachTheClientWithoutAnotherMetadataUpdate() {
+        var entity = entity();
+        entity.spawnEntity();
+        clearInvocations(session);
+        entity.setRenderProfile(7);
+        var packet = ArgumentCaptor.forClass(SetEntityDataPacket.class);
+        verify(session).sendUpstreamPacket(packet.capture());
+        var properties = packet.getValue().getProperties().getIntProperties();
+        assertEquals(7, properties.stream().filter(p -> p.getIndex() == names.indexOf("geyser:render_profile")).findFirst().orElseThrow().getValue());
     }
 
     @Test
